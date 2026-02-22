@@ -27,7 +27,16 @@ public class EmailConfig {
     javaMailSender.setPassword(mailPassword);
 
     Properties props = javaMailSender.getJavaMailProperties();
+    props.put("mail.transport.protocol", "smtp");
+    props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.starttls.required", "true");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    props.put("mail.smtp.connectiontimeout", "10000");
+    props.put("mail.smtp.timeout", "10000");
+    props.put("mail.smtp.writetimeout", "10000");
+    props.put("mail.debug", "true");
     return javaMailSender;
   }
 }

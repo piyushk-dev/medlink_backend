@@ -14,6 +14,17 @@ public class Hospitals {
     @Autowired
     private UserService uService;
 
+    // Get a single hospital by ID
+    @GetMapping("/hospitals/id/{id}")
+    public ResponseEntity<?> getHospitalById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(uService.getHospitalById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
+
     // Get hospitals by location endpoint
     @GetMapping("/hospitals/{location}")
     public ResponseEntity<?> getHospitals(@PathVariable String location) {
