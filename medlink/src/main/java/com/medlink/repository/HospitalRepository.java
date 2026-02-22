@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.medlink.models.HospitalModel;
 @Repository
-public interface HospitalRepository  extends JpaRepository<HospitalModel,Integer>{
+public interface HospitalRepository  extends JpaRepository<HospitalModel,Long>{
 
     List<HospitalModel> findAllByLocation(String location);
     

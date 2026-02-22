@@ -34,7 +34,6 @@ public class HospitalModel {
     @Column(nullable = false)
     private String contactInfo;
 
-    @NotBlank(message = "Beds info is required")
     @Column(nullable = false)
     private Integer beds;
 }

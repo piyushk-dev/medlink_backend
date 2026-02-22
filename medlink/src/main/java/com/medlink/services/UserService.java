@@ -79,7 +79,11 @@ public class UserService {
         try {
             emailUtil.sendOtpEmail(user.getEmail(), otp);
         } catch (MessagingException e) {
-            throw new RuntimeException("Unable to send otp please try again");
+            e.printStackTrace();
+            throw new RuntimeException("Unable to send otp please try again: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Email sending failed: " + e.getMessage());
         }
         user.setOtp(otp);
         user.setActive(false);
@@ -134,6 +138,11 @@ public class UserService {
         } catch (Exception e) {
             throw new Exception("Error finding hospitals in the given location");
         }
+    }
+
+    public HospitalModel getHospitalById(Long id) throws Exception {
+        return hRepository.findById(id)
+                .orElseThrow(() -> new Exception("Hospital not found with id: " + id));
     }
 
     public List<HospitalModel> postHospitals(List<HospitalModel> l) throws Exception {

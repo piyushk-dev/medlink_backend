@@ -13,122 +13,81 @@ public class EmailUtil {
   @Autowired
   private JavaMailSender javaMailSender;
 
+  private static final String FOOTER = ""
+          + "<tr>"
+          + "<td style='padding:24px 30px;background-color:#f8fafc;border-top:1px solid #e2e8f0;'>"
+          + "<p style='margin:0 0 8px;font-size:12px;color:#64748b;text-align:center;'>This is an automated email from Medlink. Please do not reply directly.</p>"
+          + "<p style='margin:0 0 8px;font-size:12px;color:#64748b;text-align:center;'>&copy; 2026 Medlink &mdash; Built by students at IIIT Lucknow</p>"
+          + "<p style='margin:0;font-size:11px;color:#94a3b8;text-align:center;'>Beta release &middot; For issues contact mail.medlink@gmail.com</p>"
+          + "</td>"
+          + "</tr>";
+
   public void sendOtpEmail(String email, String otp) throws MessagingException {
     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-    MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-    mimeMessageHelper.setTo(email);
-    mimeMessageHelper.setSubject("Verify OTP");
+    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+    helper.setTo(email);
+    helper.setFrom("mail.medlink@gmail.com");
+    helper.setSubject("Medlink — Verify Your Account");
 
-    String htmlContent = "<html>"
-            + "<head>"
-            + "<style>"
-            + "@keyframes fadeIn {"
-            + "  from { opacity: 0; }"
-            + "  to { opacity: 1; }"
-            + "}"
-            + "@keyframes slideIn {"
-            + "  from { transform: translateY(20px); opacity: 0; }"
-            + "  to { transform: translateY(0); opacity: 1; }"
-            + "}"
-            + ".fade-in {"
-            + "  animation: fadeIn 2s ease-in-out;"
-            + "}"
-            + ".slide-in {"
-            + "  animation: slideIn 1s ease-in-out;"
-            + "}"
-            + "</style>"
-            + "</head>"
-            + "<body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;'>"
-            + "<table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; margin: 20px auto; background-color: #ffffff; padding: 0; border: 1px solid #dddddd;'>"
-            + "<tr class='fade-in'>"
-            + "<td align='center' style='padding: 20px 0; background-color: #007bff; color: #ffffff;'>"
-            + "<img src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHZ5ZWQ5eGFqNXQ1dmVoMzM1anVpZ3ZndjExdXc1MXprbmo0OWpxcCZlcD12MV9pbnRlcm5naWZfYnlfaWQmY3Q9Zw/dv78V39sfMssrjpHWO/giphy.gif' alt='Medlink GIF' width='100' style='display: block;' />"
-            + "<h1 style='margin: 0; font-size: 24px;'>Medlink</h1>"
-            + "</td>"
-            + "</tr>"
-            + "<tr class='slide-in'>"
-            + "<td style='padding: 20px 30px 40px 30px;'>"
-            + "<h2 style='color: #333333; text-align: center;'>Verify Your Account</h2>"
-            + "<p style='color: #333333;'>Dear User,</p>"
-            + "<p style='color: #333333;'>Please use the following OTP to verify your account:</p>"
-            + "<p style='color: #333333; text-align: center; font-size: 24px; font-weight: bold;'>" + otp + "</p>"
-            + "<p style='color: #333333;'>If you did not request this verification, please ignore this email.</p>"
-            + "<div style='text-align: center; margin-top: 20px;'>"
-            + "</div>"
-            + "<p style='color: #333333;'>Thank you,</p>"
-            + "<p style='color: #333333;'>Team Medlink</p>"
-            + "</td>"
-            + "</tr>"
-            + "<tr class='fade-in'>"
-            + "<td style='padding: 20px; background-color: #f4f4f4; text-align: center; font-size: 12px; color: #777777;'>"
-            + "<p>© 2024 Medlink. All rights reserved.</p>"
-            + "</td>"
-            + "</tr>"
-            + "</table>"
-            + "</body>"
-            + "</html>";
-            
-    mimeMessageHelper.setText(htmlContent, true);
+    String html = "<html><body style='margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background-color:#f1f5f9;'>"
+        + "<table align='center' width='600' cellpadding='0' cellspacing='0' style='margin:30px auto;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);'>"
+        // Header
+        + "<tr><td style='background-color:#2563eb;padding:28px 30px;text-align:center;'>"
+        + "<h1 style='margin:0;font-size:26px;color:#ffffff;letter-spacing:-0.5px;'>Med<span style=\"color:#bfdbfe;\">link</span></h1>"
+        + "<p style='margin:6px 0 0;font-size:13px;color:#bfdbfe;'>Your Health, Our Priority</p>"
+        + "</td></tr>"
+        // Body
+        + "<tr><td style='padding:32px 30px 40px;'>"
+        + "<h2 style='margin:0 0 16px;font-size:20px;color:#1e293b;'>Verify Your Email</h2>"
+        + "<p style='margin:0 0 12px;font-size:14px;color:#475569;line-height:1.6;'>Hello,</p>"
+        + "<p style='margin:0 0 24px;font-size:14px;color:#475569;line-height:1.6;'>Use the verification code below to complete your Medlink registration. This code expires in <strong>5 minutes</strong>.</p>"
+        + "<div style='text-align:center;margin:0 0 24px;'>"
+        + "<div style='display:inline-block;padding:14px 40px;background-color:#f1f5f9;border:2px dashed #2563eb;border-radius:8px;'>"
+        + "<span style='font-size:32px;font-weight:700;letter-spacing:6px;color:#1e293b;'>" + otp + "</span>"
+        + "</div></div>"
+        + "<p style='margin:0 0 6px;font-size:13px;color:#64748b;line-height:1.5;'>If you did not create a Medlink account, you can safely ignore this email.</p>"
+        + "<p style='margin:24px 0 0;font-size:14px;color:#475569;'>Regards,<br/><strong>Team Medlink</strong></p>"
+        + "</td></tr>"
+        + FOOTER
+        + "</table></body></html>";
+
+    helper.setText(html, true);
     javaMailSender.send(mimeMessage);
   }
 
   public void sendAppointmentConfirmationEmail(String email, String fullName, String appointmentDate, String appointmentTime) throws MessagingException {
     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-    MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-    mimeMessageHelper.setTo(email);
-    mimeMessageHelper.setSubject("Hospital Appointment Confirmation");
+    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+    helper.setTo(email);
+    helper.setFrom("mail.medlink@gmail.com");
+    helper.setSubject("Medlink — Appointment Confirmed");
 
-    String htmlContent = "<html>"
-            + "<head>"
-            + "<style>"
-            + "@keyframes fadeIn {"
-            + "  from { opacity: 0; }"
-            + "  to { opacity: 1; }"
-            + "}"
-            + "@keyframes slideIn {"
-            + "  from { transform: translateY(20px); opacity: 0; }"
-            + "  to { transform: translateY(0); opacity: 1; }"
-            + "}"
-            + ".fade-in {"
-            + "  animation: fadeIn 2s ease-in-out;"
-            + "}"
-            + ".slide-in {"
-            + "  animation: slideIn 1s ease-in-out;"
-            + "}"
-            + "</style>"
-            + "</head>"
-            + "<body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;'>"
-            + "<table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; margin: 20px auto; background-color: #ffffff; padding: 0; border: 1px solid #dddddd;'>"
-            + "<tr class='fade-in'>"
-            + "<td align='center' style='padding: 20px 0; background-color: #28a745; color: #ffffff;'>"
-            + "<img src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHZ5ZWQ5eGFqNXQ1dmVoMzM1anVpZ3ZndjExdXc1MXprbmo0OWpxcCZlcD12MV9pbnRlcm5naWZfYnlfaWQmY3Q9Zw/dv78V39sfMssrjpHWO/giphy.gif' alt='Medlink GIF' width='100' style='display: block;' />"
-            + "<h1 style='margin: 0; font-size: 24px;'>Medlink</h1>"
-            + "</td>"
-            + "</tr>"
-            + "<tr class='slide-in'>"
-            + "<td style='padding: 20px 30px 40px 30px;'>"
-            + "<h2 style='color: #333333; text-align: center;'>Appointment Confirmation</h2>"
-            + "<p style='color: #333333;'>Dear " + fullName + ",</p>"
-            + "<p style='color: #333333;'>Your appointment is confirmed as follows:</p>"
-            + "<p style='color: #333333;'><strong>Date:</strong> " + appointmentDate + "</p>"
-            + "<p style='color: #333333;'><strong>Time:</strong> " + appointmentTime + "</p>"
-            + "<p style='color: #333333;'>If you did not request this appointment, please contact us immediately.</p>"
-            + "<div style='text-align: center; margin-top: 20px;'>"
-            + "</div>"
-            + "<p style='color: #333333;'>Thank you,</p>"
-            + "<p style='color: #333333;'>Team Medlink</p>"
-            + "</td>"
-            + "</tr>"
-            + "<tr class='fade-in'>"
-            + "<td style='padding: 20px; background-color: #f4f4f4; text-align: center; font-size: 12px; color: #777777;'>"
-            + "<p>© 2024 Medlink. All rights reserved.</p>"
-            + "</td>"
-            + "</tr>"
-            + "</table>"
-            + "</body>"
-            + "</html>";
+    String html = "<html><body style='margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background-color:#f1f5f9;'>"
+        + "<table align='center' width='600' cellpadding='0' cellspacing='0' style='margin:30px auto;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);'>"
+        // Header
+        + "<tr><td style='background-color:#16a34a;padding:28px 30px;text-align:center;'>"
+        + "<h1 style='margin:0;font-size:26px;color:#ffffff;letter-spacing:-0.5px;'>Med<span style=\"color:#bbf7d0;\">link</span></h1>"
+        + "<p style='margin:6px 0 0;font-size:13px;color:#bbf7d0;'>Appointment Confirmed</p>"
+        + "</td></tr>"
+        // Body
+        + "<tr><td style='padding:32px 30px 40px;'>"
+        + "<h2 style='margin:0 0 16px;font-size:20px;color:#1e293b;'>Your Appointment Details</h2>"
+        + "<p style='margin:0 0 20px;font-size:14px;color:#475569;line-height:1.6;'>Hello " + fullName + ",</p>"
+        + "<p style='margin:0 0 20px;font-size:14px;color:#475569;line-height:1.6;'>Your appointment has been successfully scheduled. Here are the details:</p>"
+        + "<table width='100%' cellpadding='0' cellspacing='0' style='margin:0 0 24px;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;'>"
+        + "<tr><td style='padding:12px 16px;background-color:#f8fafc;font-size:13px;color:#64748b;width:120px;border-bottom:1px solid #e2e8f0;'>Date</td>"
+        + "<td style='padding:12px 16px;font-size:14px;color:#1e293b;font-weight:600;border-bottom:1px solid #e2e8f0;'>" + appointmentDate + "</td></tr>"
+        + "<tr><td style='padding:12px 16px;background-color:#f8fafc;font-size:13px;color:#64748b;width:120px;'>Time</td>"
+        + "<td style='padding:12px 16px;font-size:14px;color:#1e293b;font-weight:600;'>" + appointmentTime + "</td></tr>"
+        + "</table>"
+        + "<p style='margin:0 0 6px;font-size:13px;color:#64748b;line-height:1.5;'>Please arrive 15 minutes early and bring a valid ID along with any relevant medical records.</p>"
+        + "<p style='margin:16px 0 0;font-size:13px;color:#64748b;line-height:1.5;'>If you did not book this appointment, please contact us immediately.</p>"
+        + "<p style='margin:24px 0 0;font-size:14px;color:#475569;'>Regards,<br/><strong>Team Medlink</strong></p>"
+        + "</td></tr>"
+        + FOOTER
+        + "</table></body></html>";
 
-    mimeMessageHelper.setText(htmlContent, true);
+    helper.setText(html, true);
     javaMailSender.send(mimeMessage);
   }
 }
