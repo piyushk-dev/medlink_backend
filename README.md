@@ -30,7 +30,7 @@ MedLink is a healthcare platform backend built with a **microservices architectu
             │                 │                  │
             └─────────────────┼──────────────────┘
                               ▼
-                    PostgreSQL (Neon Cloud)
+                       MySQL Database
 ```
 
 ## Services
@@ -50,7 +50,7 @@ MedLink is a healthcare platform backend built with a **microservices architectu
 - **Spring Data JPA** — Database access with Hibernate ORM
 - **Spring Security** — Authentication and authorization
 - **JWT (jjwt)** — Stateless token-based authentication
-- **PostgreSQL** — Database (Neon Cloud)
+- **MySQL** — Relational database
 - **Lombok** — Boilerplate code reduction
 
 ## Getting Started
@@ -58,7 +58,7 @@ MedLink is a healthcare platform backend built with a **microservices architectu
 ### Prerequisites
 - Java 17+
 - Maven
-- Docker (optional)
+- MySQL
 
 ### Run Individually
 ```bash
