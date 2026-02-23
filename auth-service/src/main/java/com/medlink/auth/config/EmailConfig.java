@@ -1,4 +1,4 @@
-package com.medlink.config;
+package com.medlink.auth.config;
 
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;

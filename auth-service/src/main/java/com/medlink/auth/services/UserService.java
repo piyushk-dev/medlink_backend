@@ -1,21 +1,15 @@
-package com.medlink.services;
+package com.medlink.auth.services;
 
-import java.util.List;
-import com.medlink.models.ContactModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.medlink.repository.ContactRepository;
-import com.medlink.models.HospitalModel;
-import com.medlink.models.JwtRequest;
-import com.medlink.models.LoginRequest;
-import com.medlink.models.PatientInfo;
-import com.medlink.models.UserModel;
-import com.medlink.repository.HospitalRepository;
-import com.medlink.repository.PatientInfoRepository;
-import com.medlink.repository.UserRepository;
-import com.medlink.utils.JwtUtils;
-import com.medlink.utils.EmailUtil;
-import com.medlink.utils.OtpUtil;
+
+import com.medlink.auth.models.JwtRequest;
+import com.medlink.auth.models.LoginRequest;
+import com.medlink.auth.models.UserModel;
+import com.medlink.auth.repository.UserRepository;
+import com.medlink.auth.utils.JwtUtils;
+import com.medlink.auth.utils.EmailUtil;
+import com.medlink.auth.utils.OtpUtil;
 
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
@@ -26,9 +20,6 @@ public class UserService {
     UserRepository userRepository;
 
     @Autowired
-    HospitalRepository hRepository;
-
-    @Autowired
     private OtpUtil otpUtil;
 
     @Autowired
@@ -36,12 +27,6 @@ public class UserService {
 
     @Autowired
     JwtUtils jwt;
-
-    @Autowired
-    PatientInfoRepository pRepository;
-
-    @Autowired
-    ContactRepository contactRepository;
 
     public boolean authenticate(String token, JwtRequest user) {
         return this.jwt.validateToken(token, user);
@@ -57,15 +42,12 @@ public class UserService {
             if (user == null) {
                 throw new Exception("User not found");
             }
-            // Check if the provided password matches the stored password
             if (!user.getPassword().equals(log.getPassword())) {
                 throw new Exception("Wrong password");
             }
-            // If the email and password match, create and return a JWT token
             JwtRequest jwtRequest = new JwtRequest(log.getEmail(), user.getId());
             return createToken(jwtRequest);
         } catch (Exception e) {
-            // e.printStackTrace();
             throw new Exception("Login failed: " + e.getMessage());
         }
     }
@@ -93,7 +75,6 @@ public class UserService {
     }
 
     public String verifyAccount(String email, String otp) throws Exception {
-
         UserModel user = userRepository.findByEmail(email);
         if (user == null) {
             throw new RuntimeException("User not found with this email: " + email);
@@ -109,14 +90,11 @@ public class UserService {
         } catch (Exception e) {
             throw new Exception("Error SigningUp: " + e.getMessage());
         }
-
         return null;
-        // return "Please regenerate otp and try again";
     }
 
     public String regenerateOtp(String email) {
         UserModel user = userRepository.findByEmail(email);
-
         if (user == null) {
             throw new RuntimeException("User not found with this email: " + email);
         }
@@ -131,56 +109,4 @@ public class UserService {
         userRepository.save(user);
         return "Email sent... please verify account within 1 minute";
     }
-
-    public List<HospitalModel> getHospitals(String location) throws Exception {
-        try {
-            return hRepository.findAllByLocation(location);
-        } catch (Exception e) {
-            throw new Exception("Error finding hospitals in the given location");
-        }
-    }
-
-    public HospitalModel getHospitalById(Long id) throws Exception {
-        return hRepository.findById(id)
-                .orElseThrow(() -> new Exception("Hospital not found with id: " + id));
-    }
-
-    public List<HospitalModel> postHospitals(List<HospitalModel> l) throws Exception {
-        try {
-            return hRepository.saveAll(l);
-        } catch (Exception e) {
-            throw new Exception("Error saving the hospitals");
-        }
-    }
-
-    public PatientInfo postPatientInfo(PatientInfo p) throws Exception {
-        PatientInfo patientInfo = this.pRepository.save(p);
-        emailUtil.sendAppointmentConfirmationEmail(p.getEmail(), p.getFullName(), p.getDate(), p.getTime());
-        return patientInfo;
-    }
-
-    public List<PatientInfo> getPatientInfo(long id) {
-        return this.pRepository.findAllByPatientId(id);
-    }
-
-    public ContactModel getContact(ContactModel contact) throws Exception {
-        try {
-            return contactRepository.save(contact);
-        } catch (Exception e) {
-            throw new Exception("Error saving contact: " + e.getMessage());
-        }
-    }
 }
-
-// public String signUp(UserModel user) throws Exception {
-// try {
-// if (userRepository.findByEmail(user.getEmail()) != null) {
-// throw new Exception("User Already Exists");
-// }
-// UserModel s = userRepository.save(user);
-// JwtRequest u = new JwtRequest(s.getEmail(), s.getId());
-// return createToken(u);
-// } catch (Exception e) {
-// throw new Exception("Error SigningUp: " + e.getMessage());
-// }
-// }
